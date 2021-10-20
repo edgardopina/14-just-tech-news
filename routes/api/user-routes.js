@@ -1,4 +1,4 @@
-const router = require('expres').Router();
+const router = require('express').Router();
 const { json } = require('express/lib/response');
 // const { User } = require('../../models/User');
 const { User } = require('../../models');
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
       });
 });
 
-// GET /api/isers/1
+// GET /api/users/1
 router.get('/:id', (req, res) => {
    // data received through req.params.id
    User.findOne({

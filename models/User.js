@@ -1,7 +1,7 @@
-// import Model class and Datatypes object
+// import Model class and DataTypes object
 // This Model class is what we create our own models from using the extends keyword so
 // User inherits all of the functionality that the Model class has.
-const { Model, Datatypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 
 // create User model
@@ -16,19 +16,19 @@ User.init(
    {
       // id column
       id: {
-         type: Datatypes.INTEGER, // use the special Sequelize DataTypes object provide what type of data it is
+         type: DataTypes.INTEGER, // use the special Sequelize DataTypes object provide what type of data it is
          allowNull: false, // this is the equivalent of SQL's `NOT NULL` option
          primaryKey: true, // instruct that this is the Primary Key
          autoIncrement: true, // turn on auto increment
       },
       // username column
       username: {
-         type: Datatypes.STRING, // use the special Sequelize DataTypes object provide what type of data it is
+         type: DataTypes.STRING, // use the special Sequelize DataTypes object provide what type of data it is
          allowNull: false, // this is the equivalent of SQL's `NOT NULL` option
       },
       // email column
       email: {
-         type: Datatypes.STRING, // use the special Sequelize DataTypes object provide what type of data it is
+         type: DataTypes.STRING, // use the special Sequelize DataTypes object provide what type of data it is
          allowNull: false, // this is the equivalent of SQL's `NOT NULL` option
          unique: true, // there cannot be any duplicate email values in this table
          // IF allowNull IS SET TO false, we can run our data through validators before creating the table data
@@ -38,7 +38,7 @@ User.init(
       },
       // password column
       password: {
-         type: Datatypes.STRING, // use the special Sequelize DataTypes object provide what type of data it is
+         type: DataTypes.STRING, // use the special Sequelize DataTypes object provide what type of data it is
          allowNull: false, // this is the equivalent of SQL's `NOT NULL` option
          // IF allowNull IS SET TO false, we can run our data through validators before creating the table data
          validate: {
