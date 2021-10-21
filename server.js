@@ -22,6 +22,10 @@ app.use(routes); // turn on routes
 // would drop and re - create all of the database tables on startup. This is great for when we make
 // changes to the Sequelize models, as the database would need a way to understand that something 
 // has changed.
+
+// force: true - it is the equivalent of DROP TABLE IF EXISTS <table-name>
+// force: true will recreate tables is there are any association changes
+// force: false - this will be the NORMAL state for this property
 sequelize.sync({ force: false })
    .then(() => {
       app.listen(PORT, () => console.log('Now listening'));

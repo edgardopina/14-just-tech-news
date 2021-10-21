@@ -1,6 +1,5 @@
 const router = require('express').Router();
-const { json } = require('express/lib/response');
-// const { User } = require('../../models/User');
+// const { json } = require('express/lib/response');
 const { User } = require('../../models');
 
 // GET /api/users
