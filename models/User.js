@@ -3,6 +3,7 @@
 // User inherits all of the functionality that the Model class has.
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
+const bcrypt = require('bcrypt');
 
 // create User model
 class User extends Model {}
@@ -47,6 +48,26 @@ User.init(
       },
    },
    {
+      hooks: {
+         // setup beforeCreate() lifecycle 'hook' functionality
+         async beforeCreate(newUserData) {
+            newUserData.password = await bcrypt.hash(newUserData.password, 10);
+            return newUserData;
+         },
+         // beforeCreate(userData) {
+         //    return bcrypt.hash(userData.password, 10)
+         //       .then(newUserData => {
+         //       return newUserData;
+         //    });
+         // },
+
+         // set up beforeUpdate() lifecycle 'hook' functionality
+         // this hook requires to update the User.update() call in user-routes.js
+         async beforeUpdate(updatedUserData) {
+            updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+            return updatedUserData;
+         },
+      },
       sequelize, // pass in our imported sequelize connection (the direct connection to our database)
       timestamps: false, // don't automatically create createdAt/updatedAt timestamp fields
       freezeTableName: true, // do NOT PLURALIZE name of database table
