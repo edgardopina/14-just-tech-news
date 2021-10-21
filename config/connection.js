@@ -2,12 +2,6 @@
 const Sequelize = require('sequelize'); // import the Sequelize constructor from the library
 require('dotenv').config();
 
-console.log(
-   `~ process.env.DB_NAME, process.env.DB_USER, process.env.DB_PW`,
-   process.env.DB_NAME,
-   process.env.DB_USER,
-   process.env.DB_PW
-);
 
 // Create connection to our database, passing MySQL info for username and password as dotenv variables!
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PW, {

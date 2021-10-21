@@ -7,7 +7,9 @@ const { User } = require('../../models');
 router.get('/', (req, res) => {
    // access our User model and run .findAll() method from MOdel class in sequelize
    // Model.findAll is equivalent to SELECT * FROM users
-   User.findAll()
+   User.findAll({
+      attributes: { exclude: ['password'] },
+   })
       .then(dbUserData => res.json(dbUserData))
       .catch(err => {
          console.log(err);
@@ -19,6 +21,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
    // data received through req.params.id
    User.findOne({
+      attributes: { exclude: ['password'] },
       where: {
          id: req.params.id,
       },
@@ -28,6 +31,7 @@ router.get('/:id', (req, res) => {
             res.status(404).json({ message: 'No user found with this id' });
             return;
          }
+         res.json(dbUserData);
       })
       .catch(err => {
          console.log(err);
@@ -68,7 +72,7 @@ router.put('/:id', (req, res) => {
             res.status(404).json({ message: 'No user found with this id' });
             return;
          }
-         res.jason(dbUserData);
+         res.json(dbUserData);
       })
       .catch(err => {
          console.log(err);
@@ -89,7 +93,7 @@ router.delete('/:id', (req, res) => {
             res.status(404).json({ message: 'No user found with this id' });
             return;
          }
-         res.jason(dbUserData);
+         res.json(dbUserData);
       })
       .catch(err => {
          console.log(err);
