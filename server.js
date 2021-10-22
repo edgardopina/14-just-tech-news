@@ -8,8 +8,7 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-// Since we set up the routes the way we did, we don't have to worry about importing multiple files 
+// Since we set up the routes the way we did, we don't have to worry about importing multiple files
 // for different endpoints. The router instance in routes /index.js collected everything for us and
 // packaged them up for server.js to use.
 app.use(routes); // turn on routes
@@ -20,14 +19,15 @@ app.use(routes); // turn on routes
 // database tables. If Sequelize doesn't find a table, it'll create it automatically
 // {force: false} in the .sync() method doesn't have to be included, but if it were set to true, it
 // would drop and re - create all of the database tables on startup. This is great for when we make
-// changes to the Sequelize models, as the database would need a way to understand that something 
+// changes to the Sequelize models, as the database would need a way to understand that something
 // has changed.
 
-// force: true - it is the equivalent of DROP TABLE IF EXISTS <table-name>
-// force: true will recreate tables is there are any association changes
-// force: false - this will be the NORMAL state for this property
-sequelize.sync({ force: false })
-   .then(() => {
-      app.listen(PORT, () => console.log('Now listening'));
-   }
-);
+/* 
+! force: true - it is the equivalent of DROP TABLE IF EXISTS <table-name>
+! force: true will recreate tables is there are any association changes
+! force: false - this will be the NORMAL state for this property 
+! ONCE that we verified that the associations are corectly build, updsate back to false
+*/
+sequelize.sync({ force: false }).then(() => {
+   app.listen(PORT, () => console.log('Now listening'));
+});

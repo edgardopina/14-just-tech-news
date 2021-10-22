@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const { User, Post } = require('../../models');
+const { User, Post, Vote } = require('../../models');
+const sequelize = require('sequelize');
 
 // GET /api/posts - all posts
 router.get('/', (req, res) => {
@@ -7,7 +8,7 @@ router.get('/', (req, res) => {
    // Model.findAll is equivalent to SELECT * FROM posts
    Post.findAll({
       attributes: ['id', 'post_url', 'title', 'created_at'],
-      order:[['created_at', 'DESC']],
+      order: [['created_at', 'DESC']],
       include: [
          {
             model: User,
@@ -65,18 +66,64 @@ router.post('/', (req, res) => {
       });
 });
 
+// PUT /api/posts/upvote
+/*
+! when we vote on a post, we are technically uopdating the post's data 
+! THIS ROUTE MUST BE PLACED BEFORE THE '/:id' ROUTE BELOW, OTHERWISE, EXPRESS.JS WILL THINK THAT THE
+! WORD 'upvote' IS A VALID PARAMETER FOR '/:id' 
+*/
+router.put('/upvote', (req, res) => {
+   Vote.create({
+      user_id: req.body.user_id,
+      post_id: req.body.post_id,
+   })
+      // .then(dbPostData => res.json(dbPostData))
+      .then(() => {
+         // then find the post we just voted for
+         return Post.findOne({
+            where: {
+               id: req.body.post_id,
+            },
+            attributes: [
+               'id',
+               'post_url',
+               'title',
+               'created_at',
+               /*
+               ! use raw MySQL aggregate function query to get count of how many votes the post has 
+               ! and return it under the name 'vote_count'
+               ! NOTE THE ARRAY SYNTAX TO CALL 'sequelize.literal()'
+               ! IF we were not counting an associated table but rather the post itself, we could have used 
+               ! sequelize.findAndCountAll() method - bummer :(
+               */
+               [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count'],
+            ],
+         })
+            .then(dbPostData => res.json(dbPostData))
+            .catch(err => {
+               console.log(err);
+               res.status(400).json(err);
+            });
+      })
+      /*
+      ! this catch is not shown in the module code, I added it to manage the err exception
+      */
+      .catch(err => {
+         console.log(err);
+         res.status(400).json(err);
+      });
+});
+
 // PUT /api/posts/1
 router.put('/:id', (req, res) => {
    // data received through req.body and we use req.params.id to ndicate where exactly we want
    // the new data to be used.
    // IF req.body has exact key/value pairs to match the model, you can just use `req.body` instead
-   Post.update(
-      {
-         where: {
-            id: req.params.id,
-         },
-      }
-   )
+   Post.update({
+      where: {
+         id: req.params.id,
+      },
+   })
       .then(dbPostData => {
          if (!dbPostData) {
             res.status(404).json({ message: 'No user found with this id' });
