@@ -1,5 +1,4 @@
 const router = require('express').Router();
-// const { json } = require('express/lib/response');
 const { User } = require('../../models');
 
 // GET /api/users
@@ -76,7 +75,7 @@ router.post('/login', (req, res) => {
    });
 });
 
-// PUT /api/isers/1
+// PUT /api/users/1
 router.put('/:id', (req, res) => {
    // expects {username: 'Lernantino', email: 'learnantino@gmail.com', password: 'password1234'}
    // data received through req.body and we use req.params.id to ndicate where exactly we want
@@ -102,7 +101,7 @@ router.put('/:id', (req, res) => {
       });
 });
 
-// DELETE /api/isers/1
+// DELETE /api/users/1
 router.delete('/:id', (req, res) => {
    User.destroy({
       where: {
