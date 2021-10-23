@@ -91,41 +91,9 @@ router.post('/', (req, res) => {
 ! WORD 'upvote' IS A VALID PARAMETER FOR '/:id' 
 */
 router.put('/upvote', (req, res) => {
-   Vote.create({
-      user_id: req.body.user_id,
-      post_id: req.body.post_id,
-   })
-      // .then(dbPostData => res.json(dbPostData))
-      .then(() => {
-         // then find the post we just voted for
-         return Post.findOne({
-            where: {
-               id: req.body.post_id,
-            },
-            attributes: [
-               'id',
-               'post_url',
-               'title',
-               'created_at',
-               /*
-               ! use raw MySQL aggregate function query to get count of how many votes the post has 
-               ! and return it under the name 'vote_count'
-               ! NOTE THE ARRAY SYNTAX TO CALL 'sequelize.literal()'
-               ! IF we were not counting an associated table but rather the post itself, we could have used 
-               ! sequelize.findAndCountAll() method - bummer :(
-               */
-               [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count'],
-            ],
-         })
-            .then(dbPostData => res.json(dbPostData))
-            .catch(err => {
-               console.log(err);
-               res.status(400).json(err);
-            });
-      })
-      /*
-      ! this catch is not shown in the module code, I added it to manage the err exception
-      */
+   // custom static method created in models/Post.js
+   Post.upvote(req.body, { Vote })
+      .then(dbPostData => res.json(dbPostData))
       .catch(err => {
          console.log(err);
          res.status(400).json(err);
