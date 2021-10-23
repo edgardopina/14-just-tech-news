@@ -7,7 +7,16 @@ router.get('/', (req, res) => {
    // access our Post model and run .findAll() method from MOdel class in sequelize
    // Model.findAll is equivalent to SELECT * FROM posts
    Post.findAll({
-      attributes: ['id', 'post_url', 'title', 'created_at'],
+      attributes: [
+         'id',
+         'post_url',
+         'title',
+         'created_at',
+         /*
+         ! add count of votes per post         
+         */
+         [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count'],
+      ],
       order: [['created_at', 'DESC']],
       include: [
          {
@@ -30,7 +39,16 @@ router.get('/:id', (req, res) => {
       where: {
          id: req.params.id,
       },
-      attributes: ['id', 'post_url', 'title', 'created_at'],
+      attributes: [
+         'id',
+         'post_url',
+         'title',
+         'created_at',
+         /*
+         ! add count of votes per post         
+         */
+         [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count'],
+      ],
       include: [
          {
             model: User,
