@@ -1,6 +1,7 @@
 const User = require('./User');
 const Post = require('./Post');
 const Vote = require('./Vote');
+const Comment = require('./Comment');
 
 
 /*
@@ -67,7 +68,25 @@ Post.hasMany(Vote, {
 
 /************************************************** */
 
+// Comment ASSOCIATIONS
+
+Comment.belongsTo(User, {
+   foreignKey: 'user_id'
+ });
+ 
+ Comment.belongsTo(Post, {
+   foreignKey: 'post_id'
+ });
+ 
+ User.hasMany(Comment, {
+   foreignKey: 'user_id'
+ });
+ 
+ Post.hasMany(Comment, {
+   foreignKey: 'post_id'
+ });
+
 // All this file is responsible for right now is importing the User model and exporting an object
 // with it as a property.It seems unnecessary at the moment, but doing this now will set us up for
 // future growth of the application.
-module.exports = { User, Post, Vote };
+module.exports = { User, Post, Vote, Comment };

@@ -7,8 +7,6 @@ class Post extends Model {
    !  static keyword to indicate that the upvote method is one that's based on the Post model and not an instance method
    */
    static upvote(body, models) {
-   console.log(`~ models`, models);
-      
       return (
          /*
          ! content of models: models { Vote: vote }; therefore models.Vote.create() works and there is no need for require
