@@ -33,31 +33,10 @@ router.get('/', (req, res) => {
       ],
    })
       .then(dbPostData => {
-         /* 
-         !  pass a single post object into the homepage template*/
-         // the second argument object includes all the data we want to pass to our tenmplate (View)
-         // Each property on the object (id, post_url, title, etc.) becomes available in the template 'hompage'
-         // using the Handlebars.js { { } } syntax.
-         // dbPostData - full array of post with additional data
-         // dbPostData[0] - first element of array (first post) with additional data
-         // dbPostData[0].get({ plain: true }) - first element of array with post data only
-
          // posts - full array of posts data only
          const posts = dbPostData.map(post => post.get({ plain: true }));
-
          // we wrap the array posts and pass it as an objectto be able to add more properties to the template later
          res.render('homepage', { posts });
-         // res.render('homepage', dbPostData[0].get({ plain: true }));
-         // {
-         //    id: 1,
-         //    post_url: 'http://handlebars.com/guide/',
-         //    created_at: new Date(),
-         //    vote_count: 10,
-         //    comments: [{}, {}],
-         //    user: {
-         //       username: 'test_user',
-         //    },
-         // });
       })
       .catch(err => {
          console.error(err);
@@ -65,6 +44,8 @@ router.get('/', (req, res) => {
       });
 });
 
+
+// renders login page
 router.get('/login', (req, res) => {
    res.render('login');
 });
