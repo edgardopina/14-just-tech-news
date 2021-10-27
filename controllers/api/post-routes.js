@@ -117,11 +117,12 @@ router.put('/upvote', (req, res) => {
 });
 
 // PUT /api/posts/1
+// data received through req.body and we use req.params.id to ndicate where exactly we want
+// the new data to be used.
+// IF req.body has exact key/value pairs to match the model, you can just use `req.body` instead
 router.put('/:id', (req, res) => {
-   // data received through req.body and we use req.params.id to ndicate where exactly we want
-   // the new data to be used.
-   // IF req.body has exact key/value pairs to match the model, you can just use `req.body` instead
-   Post.update({
+   // data received through req.params.id
+   Post.update(req.body, {
       where: {
          id: req.params.id,
       },

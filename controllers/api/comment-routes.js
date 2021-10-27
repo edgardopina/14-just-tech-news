@@ -14,7 +14,6 @@ router.get('/', (req, res) => {
 
 // POST /api/comments - create a comment
 router.post('/', (req, res) => {
-   console.log('req.body: ', req.body);
    Comment.create({
       comment_text: req.body.comment_text,
       user_id: req.body.user_id,
