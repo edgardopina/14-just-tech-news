@@ -6,8 +6,32 @@ const path = require('path'); // import path package
 const exphbs = require('express-handlebars'); // import express-handlebars
 const hbs = exphbs.create({}); // instantiate express-handlebars object
 
+/* 
+! Creating session in the back-end */
+const session = require('express-session'); // setup express-session
+// connect the session to our Sequelize database
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+// the session objet
+const sess = {
+   /*         
+   ! this value must be an actual secret and stored in the '.env' file */
+   secret: 'Super secret secret',
+   // we tell our session to use cookies, If we wanted to set additional options on the
+   // cookie, like a maximum age, we would add the options to that object.
+   cookie: {}, 
+   resave: false, // use false always
+   saveUninitialized: true,
+   store: new SequelizeStore({
+      db: sequelize,
+   }),
+};
+
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+/* 
+! middleware to create session in the back-end */
+app.use(session(sess));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

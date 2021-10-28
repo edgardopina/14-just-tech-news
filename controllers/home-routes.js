@@ -9,6 +9,7 @@ const { Post, User, Comment } = require('../models');
 // on content; it only included a single < div >. Handlebars.js will automatically feed that into the
 // main.handlebars template, however, and respond with a complete HTML file.
 router.get('/', (req, res) => {
+   console.log(`~ req.session`, req.session);
    Post.findAll({
       attributes: [
          'id',
@@ -44,9 +45,12 @@ router.get('/', (req, res) => {
       });
 });
 
-
 // renders login page
 router.get('/login', (req, res) => {
+   if (req.session.loggedIn) {
+      res.redirect('/');
+      return;
+   }
    res.render('login');
 });
 

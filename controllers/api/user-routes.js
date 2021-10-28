@@ -65,12 +65,25 @@ router.post('/', (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
-   })
-      .then(dbUserData => res.json(dbUserData))
-      .catch(err => {
-         console.log(err);
-         res.status(500).json(err);
+   }).then(dbUserData => {
+      // give the server easy access to the user's user_id and username, and a boolean describing whether
+      // or not the user is logged in.
+      // We want to make sure the session is created before we send the response back, so we're wrapping
+      // the variables in a callback. The req.session.save() method will initiate the creation of the
+      // session and then run the callback function once complete.
+      req.session.save(() => {
+         req.session.user_id = dbUserData.id;
+         req.session.username = dbUserData.username;
+         req.session.loggedIn = true;
+         // callback
+         res.json(dbUserData);
       });
+   });
+   // .then(dbUserData => res.json(dbUserData))
+   // .catch(err => {
+   //    console.log(err);
+   //    res.status(500).json(err);
+   // });
 });
 
 // POST /api/users/login
@@ -84,14 +97,23 @@ router.post('/login', (req, res) => {
          res.status(404).json({ message: 'No user found with that email address!' });
          return;
       }
-      // res.json({ user: dbUserData });
+
       //verify user
       const validPassword = dbUserData.checkPassword(req.body.password);
       if (!validPassword) {
          res.status(400).json({ message: 'Incorrect password!' });
          return;
       }
-      res.json({ user: dbUserData, message: 'You are now logged in!' });
+
+      // res.json({ user: dbUserData, message: 'You are now logged in!' });
+      // added session variables
+      req.session.save(() => {
+         req.session.user_id = dbUserData.id;
+         req.session.username = dbUserData.username;
+         req.session.loggedIn = true;
+         // callback
+         res.json(dbUserData);
+      });
    });
 });
 
