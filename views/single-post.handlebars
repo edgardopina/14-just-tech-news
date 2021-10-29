@@ -13,15 +13,18 @@
       <a href='/post/{{post.id}}'>{{post.comments.length}} comments</a>
    </div>
 </article>
+
 <form class='comment-form'>
    <div>
       <textarea name='comment-body'></textarea>
    </div>
+
    <div>
       <button type='submit'>add comment</button>
       <button type='button' class='upvote-btn'>upvote</button>
    </div>
 </form>
+
 <div class='comments'>
    {{#each post.comments}}
       <section class='comment'>
@@ -36,3 +39,6 @@
       </section>
    {{/each}}
 </div>
+
+<script src='/javascript/comment.js'></script>
+<script src='/javascript/upvote.js'></script>
