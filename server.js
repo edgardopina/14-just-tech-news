@@ -3,8 +3,9 @@ const routes = require('./controllers');
 const sequelize = require('./config/connection'); //  importing the connection to Sequelize
 const path = require('path'); // import path package
 
+const helpers = require('./utils/helpers'); // import helper functions
 const exphbs = require('express-handlebars'); // import express-handlebars
-const hbs = exphbs.create({}); // instantiate express-handlebars object
+const hbs = exphbs.create({ helpers }); // instantiate express-handlebars object
 
 /* 
 ! Creating session in the back-end */
@@ -18,7 +19,7 @@ const sess = {
    secret: 'Super secret secret',
    // we tell our session to use cookies, If we wanted to set additional options on the
    // cookie, like a maximum age, we would add the options to that object.
-   cookie: {}, 
+   cookie: {},
    resave: false, // use false always
    saveUninitialized: true,
    store: new SequelizeStore({
