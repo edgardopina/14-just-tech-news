@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const { User, Post, Vote, Comment } = require('../../models');
 const sequelize = require('sequelize');
+const withAuth = require('../../utils/auth');
+
+
 
 // GET /api/posts - all posts
 router.get('/', (req, res) => {
@@ -86,12 +89,12 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/posts
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
    // data received through req.body
    Post.create({
       title: req.body.title,
       post_url: req.body.post_url,
-      user_id: req.session.user_id
+      user_id: req.session.user_id,
    })
       .then(dbPostData => res.json(dbPostData))
       .catch(err => {
@@ -107,7 +110,7 @@ router.post('/', (req, res) => {
 ! WORD 'upvote' IS A VALID PARAMETER FOR '/:id' 
 */
 router.put('/upvote', (req, res) => {
-   // make sure that the session exists first, then if a session does exist, we're using the saved user_id 
+   // make sure that the session exists first, then if a session does exist, we're using the saved user_id
    // property on the session to insert a new record in the vote table.
    if (req.session) {
       //pass session id along with all destructured properties on req.body
@@ -124,7 +127,7 @@ router.put('/upvote', (req, res) => {
 // data received through req.body and we use req.params.id to ndicate where exactly we want
 // the new data to be used.
 // IF req.body has exact key/value pairs to match the model, you can just use `req.body` instead
-router.put('/:id', (req, res) => {
+router.put('/:id', withAuth, (req, res) => {
    // data received through req.params.id
    Post.update(req.body, {
       where: {
@@ -145,7 +148,7 @@ router.put('/:id', (req, res) => {
 });
 
 // DELETE /api/posts/1
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
    Post.destroy({
       where: {
          id: req.params.id,
