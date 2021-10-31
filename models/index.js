@@ -48,13 +48,12 @@ Post.belongsToMany(User, {
 // ONE-TO-ONE
 Vote.belongsTo(User, {
    foreignKey: 'user_id',
-   onDelete: 'SET NULL'
+
 });
 
 // ONE-TO-ONE
 Vote.belongsTo(Post, {
    foreignKey: 'post_id',
-   onDelete: 'SET NULL'
 });
 
 // By also creating one-to-many associations directly between these models, we can perform aggregated SQL 

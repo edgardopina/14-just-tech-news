@@ -8,12 +8,14 @@ require('dotenv').config();
 // When the app is deployed to heroku, it will have access to Heroku's process.env.JAWSDB_URL variable and use that 
 // value to connect.Otherwise, it will continue using the localhost configuration.
 // Create connection to our database, passing MySQL info for username and password as dotenv variables!
-let sequelize = process.env.JAWSDB_URL
-   ? new Sequelize(process.env.JAWSDB_URL)
-   : new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PW, {
-        host: 'localhost',
-        dialect: 'mysql',
-        port: 3306,
-     });
+const sequelize = process.env.JAWSDB_URL
+? new Sequelize(process.env.JAWSDB_URL)
+: new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PW, {
+   host: 'localhost',
+   dialect: 'mysql',
+   port: 3306,
+});
+
+console.log(`~ sequelize at comnnection.js `, sequelize);
 
 module.exports = sequelize;
