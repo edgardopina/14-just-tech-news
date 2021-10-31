@@ -66,6 +66,6 @@ app.use(routes); // turn on routes
 ! force: true will recreate tables is there are any association changes
 ! force: false - this will be the NORMAL state for this property 
 ! ONCE that we verified that the associations are corectly built, update back to false */
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ force: true }).then(() => {
    app.listen(PORT, () => console.log('Now listening on Port:', PORT));
 });

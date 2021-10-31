@@ -3,7 +3,6 @@ const Post = require('./Post');
 const Vote = require('./Vote');
 const Comment = require('./Comment');
 
-
 /*
 ! REMEMBER: EACH TIME WE UPDATE THE RELATIONSHIPS (ASSOCIATIONS) between the tables, we need to use 
 ! sequelize.sync({ force: true }) in server.js to drop the tables and recreate them!
@@ -23,7 +22,7 @@ User.hasMany(Post, {
 */
 Post.belongsTo(User, {
    foreignKey: 'user_id',
-   onDelete: 'SET NULL'
+   onDelete: 'SET NULL',
 });
 
 /************************************************** */
@@ -32,7 +31,7 @@ User.belongsToMany(Post, {
    through: Vote,
    as: 'voted_posts',
    foreignKey: 'user_id',
-   onDelete: 'SET NULL'
+   onDelete: 'SET NULL',
 });
 
 // MANY-TO-MANY
@@ -40,7 +39,7 @@ Post.belongsToMany(User, {
    through: Vote,
    as: 'voted_posts',
    foreignKey: 'post_id',
-   onDelete: 'SET NULL'
+   onDelete: 'SET NULL',
 });
 
 /************************************************** */
@@ -48,15 +47,16 @@ Post.belongsToMany(User, {
 // ONE-TO-ONE
 Vote.belongsTo(User, {
    foreignKey: 'user_id',
-
+   onDelete: 'SET NULL',
 });
 
 // ONE-TO-ONE
 Vote.belongsTo(Post, {
    foreignKey: 'post_id',
+   onDelete: 'SET NULL',
 });
 
-// By also creating one-to-many associations directly between these models, we can perform aggregated SQL 
+// By also creating one-to-many associations directly between these models, we can perform aggregated SQL
 // functions between models.In this case, we'll see a total count of votes for a single post when queried.
 // This would be difficult if we hadn't directly associated the Vote model with the other two.
 
@@ -76,22 +76,22 @@ Post.hasMany(Vote, {
 
 Comment.belongsTo(User, {
    foreignKey: 'user_id',
-   onDelete: 'SET NULL'
- });
- 
- Comment.belongsTo(Post, {
-    foreignKey: 'post_id',
-    onDelete: 'SET NULL'
- });
- 
- User.hasMany(Comment, {
-    foreignKey: 'user_id',
-    onDelete: 'SET NULL'
- });
- 
- Post.hasMany(Comment, {
-   foreignKey: 'post_id'
- });
+   onDelete: 'SET NULL',
+});
+
+Comment.belongsTo(Post, {
+   foreignKey: 'post_id',
+   onDelete: 'SET NULL',
+});
+
+User.hasMany(Comment, {
+   foreignKey: 'user_id',
+   onDelete: 'SET NULL',
+});
+
+Post.hasMany(Comment, {
+   foreignKey: 'post_id',
+});
 
 // All this file is responsible for right now is importing the User model and exporting an object
 // with it as a property.It seems unnecessary at the moment, but doing this now will set us up for
