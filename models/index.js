@@ -23,6 +23,7 @@ User.hasMany(Post, {
 */
 Post.belongsTo(User, {
    foreignKey: 'user_id',
+   onDelete: 'SET NULL'
 });
 
 /************************************************** */
@@ -31,6 +32,7 @@ User.belongsToMany(Post, {
    through: Vote,
    as: 'voted_posts',
    foreignKey: 'user_id',
+   onDelete: 'SET NULL'
 });
 
 // MANY-TO-MANY
@@ -38,6 +40,7 @@ Post.belongsToMany(User, {
    through: Vote,
    as: 'voted_posts',
    foreignKey: 'post_id',
+   onDelete: 'SET NULL'
 });
 
 /************************************************** */
@@ -45,11 +48,13 @@ Post.belongsToMany(User, {
 // ONE-TO-ONE
 Vote.belongsTo(User, {
    foreignKey: 'user_id',
+   onDelete: 'SET NULL'
 });
 
 // ONE-TO-ONE
 Vote.belongsTo(Post, {
    foreignKey: 'post_id',
+   onDelete: 'SET NULL'
 });
 
 // By also creating one-to-many associations directly between these models, we can perform aggregated SQL 
@@ -71,15 +76,18 @@ Post.hasMany(Vote, {
 // Comment ASSOCIATIONS
 
 Comment.belongsTo(User, {
-   foreignKey: 'user_id'
+   foreignKey: 'user_id',
+   onDelete: 'SET NULL'
  });
  
  Comment.belongsTo(Post, {
-   foreignKey: 'post_id'
+    foreignKey: 'post_id',
+    onDelete: 'SET NULL'
  });
  
  User.hasMany(Comment, {
-   foreignKey: 'user_id'
+    foreignKey: 'user_id',
+    onDelete: 'SET NULL'
  });
  
  Post.hasMany(Comment, {
