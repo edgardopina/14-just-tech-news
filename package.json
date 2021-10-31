@@ -1,22 +1,22 @@
 {
-   "name": "13-just-tech-news",
+   "name": "14-just-tech-news",
    "version": "1.0.0",
    "description": "Blog app",
    "main": "server.js",
    "scripts": {
       "test": "jest",
-      "start": "nodemon server.js"
+      "start": "node server.js"
    },
    "repository": {
       "type": "git",
-      "url": "git+https://github.com/edgardopina/13-just-tech-news.git"
+      "url": "git+https://github.com/edgardopina/14-just-tech-news.git"
    },
    "author": "Edgardo Pina",
    "license": "MIT",
    "bugs": {
-      "url": "https://github.com/edgardopina/13-just-tech-news/issues"
+      "url": "https://github.com/edgardopina/14-just-tech-news/issues"
    },
-   "homepage": "https://github.com/edgardopina/13-just-tech-news#readme",
+   "homepage": "https://github.com/edgardopina/14-just-tech-news#readme",
    "dependencies": {
       "bcrypt": "^5.0.1",
       "connect-session-sequelize": "^7.1.2",
