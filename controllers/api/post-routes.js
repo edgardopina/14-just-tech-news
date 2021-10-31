@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const { User, Post, Vote, Comment } = require('../../models');
 const sequelize = require('sequelize');
+const withAuth = require('../../utils/auth');
+
+
 
 // GET /api/posts - all posts
 router.get('/', (req, res) => {
@@ -86,12 +89,12 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/posts
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
    // data received through req.body
    Post.create({
       title: req.body.title,
       post_url: req.body.post_url,
-      user_id: req.body.user_id,
+      user_id: req.session.user_id,
    })
       .then(dbPostData => res.json(dbPostData))
       .catch(err => {
@@ -107,21 +110,26 @@ router.post('/', (req, res) => {
 ! WORD 'upvote' IS A VALID PARAMETER FOR '/:id' 
 */
 router.put('/upvote', (req, res) => {
-   // custom static method created in models/Post.js
-   Post.upvote(req.body, { Vote })
-      .then(dbPostData => res.json(dbPostData))
-      .catch(err => {
-         console.log(err);
-         res.status(400).json(err);
-      });
+   // make sure that the session exists first, then if a session does exist, we're using the saved user_id
+   // property on the session to insert a new record in the vote table.
+   if (req.session) {
+      //pass session id along with all destructured properties on req.body
+      Post.upvote({ ...req.body, user_id: req.session.user_id }, { Vote, Comment, User })
+         .then(updatedVoteData => res.json(updatedVoteData))
+         .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+         });
+   }
 });
 
 // PUT /api/posts/1
-router.put('/:id', (req, res) => {
-   // data received through req.body and we use req.params.id to ndicate where exactly we want
-   // the new data to be used.
-   // IF req.body has exact key/value pairs to match the model, you can just use `req.body` instead
-   Post.update({
+// data received through req.body and we use req.params.id to ndicate where exactly we want
+// the new data to be used.
+// IF req.body has exact key/value pairs to match the model, you can just use `req.body` instead
+router.put('/:id', withAuth, (req, res) => {
+   // data received through req.params.id
+   Post.update(req.body, {
       where: {
          id: req.params.id,
       },
@@ -140,7 +148,7 @@ router.put('/:id', (req, res) => {
 });
 
 // DELETE /api/posts/1
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
    Post.destroy({
       where: {
          id: req.params.id,

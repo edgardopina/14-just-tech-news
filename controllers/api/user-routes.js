@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const { User, Post, Vote, Comment } = require('../../models');
+const withAuth = require('../../utils/auth');
+
 
 // GET /api/users
 router.get('/', (req, res) => {
@@ -58,19 +60,32 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/users
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
    // expects {username: 'Lernantino', email: 'learnantino@gmail.com', password: 'password1234'}
    // data received through req.body
    User.create({
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
-   })
-      .then(dbUserData => res.json(dbUserData))
-      .catch(err => {
-         console.log(err);
-         res.status(500).json(err);
+   }).then(dbUserData => {
+      // give the server easy access to the user's user_id and username, and a boolean describing whether
+      // or not the user is logged in.
+      // We want to make sure the session is created before we send the response back, so we're wrapping
+      // the variables in a callback. The req.session.save() method will initiate the creation of the
+      // session and then run the callback function once complete.
+      req.session.save(() => {
+         req.session.user_id = dbUserData.id;
+         req.session.username = dbUserData.username;
+         req.session.loggedIn = true;
+         // callback
+         res.json(dbUserData);
       });
+   });
+   // .then(dbUserData => res.json(dbUserData))
+   // .catch(err => {
+   //    console.log(err);
+   //    res.status(500).json(err);
+   // });
 });
 
 // POST /api/users/login
@@ -84,19 +99,39 @@ router.post('/login', (req, res) => {
          res.status(404).json({ message: 'No user found with that email address!' });
          return;
       }
-      // res.json({ user: dbUserData });
+
       //verify user
       const validPassword = dbUserData.checkPassword(req.body.password);
       if (!validPassword) {
          res.status(400).json({ message: 'Incorrect password!' });
          return;
       }
-      res.json({ user: dbUserData, message: 'You are now logged in!' });
+
+      // res.json({ user: dbUserData, message: 'You are now logged in!' });
+      // added session variables
+      req.session.save(() => {
+         req.session.user_id = dbUserData.id;
+         req.session.username = dbUserData.username;
+         req.session.loggedIn = true;
+         // callback
+         res.json(dbUserData);
+      });
    });
 });
 
+// POST /api/users/logout
+router.post('/logout', withAuth, (req, res) => {
+   if (req.session.loggedIn) {
+      req.session.destroy(() => {
+         res.status(204).end();
+      });
+   } else {
+      res.status(404).end();
+   }
+});
+
 // PUT /api/users/1
-router.put('/:id', (req, res) => {
+router.put('/:id', withAuth, (req, res) => {
    // expects {username: 'Lernantino', email: 'learnantino@gmail.com', password: 'password1234'}
    // data received through req.body and we use req.params.id to ndicate where exactly we want
    // the new data to be used.
@@ -122,7 +157,7 @@ router.put('/:id', (req, res) => {
 });
 
 // DELETE /api/users/1
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
    User.destroy({
       where: {
          id: req.params.id,

@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { Comment } = require('../../models');
-
-
+const withAuth = require('../../utils/auth');
 // GET /api/comments
 router.get('/', (req, res) => {
    Comment.findAll()
@@ -13,23 +12,25 @@ router.get('/', (req, res) => {
 });
 
 // POST /api/comments - create a comment
-router.post('/', (req, res) => {
-   console.log('req.body: ', req.body);
-   Comment.create({
-      comment_text: req.body.comment_text,
-      user_id: req.body.user_id,
-      post_id: req.body.post_id,
-   })
-      .then(dbCommentData => res.json(dbCommentData))
-      .catch(err => {
-         console.log(err);
-         res.status(400).json(err);
-      });
+router.post('/', withAuth, (req, res) => {
+   // check for an active session to ensure that only logged users can interact with the database
+   if (req.session) {
+      Comment.create({
+         comment_text: req.body.comment_text,
+         post_id: req.body.post_id,
+         // user_id: req.body.user_id,
+         user_id: req.session.user_id,
+      })
+         .then(dbCommentData => res.json(dbCommentData))
+         .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+         });
+   }
 });
 
-
 // DELETE /api/comments/1
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
    Comment.destroy({
       where: {
          id: req.params.id,
@@ -47,6 +48,5 @@ router.delete('/:id', (req, res) => {
          res.status(500).json(err);
       });
 });
-
 
 module.exports = router;

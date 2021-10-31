@@ -1,12 +1,52 @@
 const express = require('express');
-const routes = require('./routes');
+const routes = require('./controllers');
 const sequelize = require('./config/connection'); //  importing the connection to Sequelize
+const path = require('path'); // import path package
+
+const helpers = require('./utils/helpers'); // import helper functions
+const exphbs = require('express-handlebars'); // import express-handlebars
+const hbs = exphbs.create({ helpers }); // instantiate express-handlebars object
+
+/* 
+! Creating session in the back-end */
+const session = require('express-session'); // setup express-session
+// connect the session to our Sequelize database
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+// the session objet
+const sess = {
+   /*         
+   ! this value must be an actual secret and stored in the '.env' file */
+   secret: 'Super secret secret',
+   // we tell our session to use cookies, If we wanted to set additional options on the
+   // cookie, like a maximum age, we would add the options to that object.
+   cookie: {},
+   resave: false, // use false always
+   saveUninitialized: true,
+   store: new SequelizeStore({
+      db: sequelize,
+   }),
+};
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+/* 
+! middleware to create session in the back-end */
+app.use(session(sess));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// makes ./public (including stylesheet) to the client
+// The express.static() method is a built-in Express.js middleware function that can take all of the
+// contents of a folder and serve them as static assets. This is useful for front - end specific
+// files like images, style sheets, and JavaScript files.
+/* 
+! this app.use(express.static.....) MUST be placed before app.use(routes); */
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.engine('handlebars', hbs.engine); // sets express engine 'handlebars' from handlebars' engine
+app.set('view engine', 'handlebars'); // sets 'view engine' from app.engine
 
 // Since we set up the routes the way we did, we don't have to worry about importing multiple files
 // for different endpoints. The router instance in routes /index.js collected everything for us and
@@ -21,13 +61,11 @@ app.use(routes); // turn on routes
 // would drop and re - create all of the database tables on startup. This is great for when we make
 // changes to the Sequelize models, as the database would need a way to understand that something
 // has changed.
-
 /* 
 ! force: true - it is the equivalent of DROP TABLE IF EXISTS <table-name>
 ! force: true will recreate tables is there are any association changes
 ! force: false - this will be the NORMAL state for this property 
-! ONCE that we verified that the associations are corectly build, updsate back to false
-*/
+! ONCE that we verified that the associations are corectly built, update back to false */
 sequelize.sync({ force: false }).then(() => {
-   app.listen(PORT, () => console.log('Now listening'));
+   app.listen(PORT, () => console.log('Now listening on Port:', PORT));
 });
