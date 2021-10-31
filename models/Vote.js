@@ -13,7 +13,7 @@ Vote.init(
       // join
       user_id: {
          type: DataTypes.INTEGER,
-         allowNull: true,
+         allowNull: false,
          references: {
             model: 'user',
             key: 'id',
@@ -21,7 +21,7 @@ Vote.init(
       },
       post_id: {
          type: DataTypes.INTEGER,
-         allowNull: true,
+         allowNull: false,
          references: {
             model: 'post',
             key: 'id',
