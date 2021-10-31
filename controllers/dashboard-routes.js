@@ -8,7 +8,7 @@ const withAuth = require('../utils/auth');
 // When withAuth() calls next(), it will call the next(anonymous) function.
 // However, if withAuth() calls res.redirect(), there is no need for the next function to
 //  be called, because the response has already been sent.
-router.get('/', (req, res) => {
+router.get('/', withAuth, (req, res) => {
    Post.findAll({
       where: {
          // use the ID from the session

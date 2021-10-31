@@ -1,9 +1,8 @@
 const router = require('express').Router();
+// const sequelize = require('sequelize');
+const sequelize = require('../../config/connection');
 const { User, Post, Vote, Comment } = require('../../models');
-const sequelize = require('sequelize');
 const withAuth = require('../../utils/auth');
-
-
 
 // GET /api/posts - all posts
 router.get('/', (req, res) => {
@@ -109,7 +108,7 @@ router.post('/', withAuth, (req, res) => {
 ! THIS ROUTE MUST BE PLACED BEFORE THE '/:id' ROUTE BELOW, OTHERWISE, EXPRESS.JS WILL THINK THAT THE
 ! WORD 'upvote' IS A VALID PARAMETER FOR '/:id' 
 */
-router.put('/upvote', (req, res) => {
+router.put('/upvote', withAuth, (req, res) => {
    // make sure that the session exists first, then if a session does exist, we're using the saved user_id
    // property on the session to insert a new record in the vote table.
    if (req.session) {
@@ -129,11 +128,16 @@ router.put('/upvote', (req, res) => {
 // IF req.body has exact key/value pairs to match the model, you can just use `req.body` instead
 router.put('/:id', withAuth, (req, res) => {
    // data received through req.params.id
-   Post.update(req.body, {
-      where: {
-         id: req.params.id,
+   Post.update(
+      {
+         title: req.body.title,
       },
-   })
+      {
+         where: {
+            id: req.params.id,
+         },
+      }
+   )
       .then(dbPostData => {
          if (!dbPostData) {
             res.status(404).json({ message: 'No user found with this id' });

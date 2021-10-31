@@ -16,6 +16,4 @@ const sequelize = process.env.JAWSDB_URL
    port: 3306,
 });
 
-console.log(`~ sequelize at comnnection.js `, sequelize);
-
 module.exports = sequelize;
