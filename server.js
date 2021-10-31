@@ -2,21 +2,22 @@ const express = require('express');
 const routes = require('./controllers');
 const sequelize = require('./config/connection'); //  importing the connection to Sequelize
 const path = require('path'); // import path package
-
 const helpers = require('./utils/helpers'); // import helper functions
 const exphbs = require('express-handlebars'); // import express-handlebars
-const hbs = exphbs.create({ helpers }); // instantiate express-handlebars object
-
 /* 
 ! Creating session in the back-end */
 const session = require('express-session'); // setup express-session
 // connect the session to our Sequelize database
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
 // the session objet
 const sess = {
    /*         
    ! this value must be an actual secret and stored in the '.env' file */
-   secret: 'Super secret secret',
+   secret: process.env.SECRET,
    // we tell our session to use cookies, If we wanted to set additional options on the
    // cookie, like a maximum age, we would add the options to that object.
    cookie: {},
@@ -27,8 +28,10 @@ const sess = {
    }),
 };
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+const hbs = exphbs.create({ helpers }); // instantiate express-handlebars object
+app.engine('handlebars', hbs.engine); // sets express engine 'handlebars' from handlebars' engine
+app.set('view engine', 'handlebars'); // sets 'view engine' from app.engine
+
 
 /* 
 ! middleware to create session in the back-end */
@@ -44,9 +47,6 @@ app.use(express.urlencoded({ extended: true }));
 /* 
 ! this app.use(express.static.....) MUST be placed before app.use(routes); */
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.engine('handlebars', hbs.engine); // sets express engine 'handlebars' from handlebars' engine
-app.set('view engine', 'handlebars'); // sets 'view engine' from app.engine
 
 // Since we set up the routes the way we did, we don't have to worry about importing multiple files
 // for different endpoints. The router instance in routes /index.js collected everything for us and
