@@ -71,6 +71,10 @@ Post.init(
             key: 'id',
          },
       },
+      image_path: {
+         type: DataTypes.STRING,
+         allowNull: false,
+      },
    },
    {
       sequelize,

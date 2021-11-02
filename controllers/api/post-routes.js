@@ -89,19 +89,39 @@ router.get('/:id', (req, res) => {
 
 // POST /api/posts
 router.post('/', withAuth, (req, res) => {
-   // data received through req.body
+   let path = process.cwd() + '/public/images/';
+   let file = '';
+
+   if (req.files) {
+      file = req.files.post_img;
+      path += file.name;
+   } else {
+      path += 'not_available.png';
+   }
+
    Post.create({
-      title: req.body.title,
+      title: req.body.post_title,
       post_url: req.body.post_url,
       user_id: req.session.user_id,
+      image_path: path,
    })
-      .then(dbPostData => res.json(dbPostData))
-      .catch(err => {
+      .then((dbPostData) => {
+         if (file) {
+            // * move file to new directory in server with: mv(path, CB function(err))
+            file.mv(path, (err) => {
+               if (err) {
+                  return res.status(500).json(err);
+               }
+               return res.send({ status: 'success', path: path });
+            });
+         }
+         // res.render('homepage', { loggedIn: true });
+      })
+      .catch((err) => {
          console.log(err);
          res.status(500).json(err);
       });
 });
-
 // PUT /api/posts/upvote
 /*
 ! when we vote on a post, we are technically uopdating the post's data 

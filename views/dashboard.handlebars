@@ -1,14 +1,18 @@
 <section>
    <h2>Create New Post</h2>
 
-   <form class='new-post-form'>
+   {{!-- <form class='new-post-form'> --}}
+   <form class='new-post-form' id="new-post-form" enctype="multipart/form-data" method="POST" action="/api/posts">
       <div>
          <label for='post-title'>Title</label>
-         <input type='text' id='post-title' name='post-title' />
+         <input type='text' id='post_title' name='post_title' />
       </div>
       <div>
          <label for='post-url'>Link</label>
-         <input type='text' id='post-url' name='post-url' />
+         <input type='text' id='post_url' name='post_url' />
+      </div>
+      <div>
+         <input type='file' id='post_img' name='post_img' />
       </div>
       <button type='submit' class='btn'>Create</button>
    </form>
@@ -29,4 +33,4 @@
    </section>
 {{/if}}
 
-<script src='/javascript/add-post.js'></script>
+{{!-- <script src='/javascript/add-post.js'></script> --}}

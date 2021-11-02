@@ -4,7 +4,14 @@ const sequelize = require('./config/connection'); //  importing the connection t
 const path = require('path'); // import path package
 const helpers = require('./utils/helpers'); // import helper functions
 const exphbs = require('express-handlebars'); // import express-handlebars
+
+/*
+! express-formidable */
+const fileUpload = require('express-fileupload');
+
+
 /* 
+
 ! Creating session in the back-end */
 const session = require('express-session'); // setup express-session
 // connect the session to our Sequelize database
@@ -12,6 +19,10 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+/*
+! fileuploader */
+app.use(fileUpload());
 
 // the session objet
 const sess = {
@@ -31,7 +42,6 @@ const sess = {
 const hbs = exphbs.create({ helpers }); // instantiate express-handlebars object
 app.engine('handlebars', hbs.engine); // sets express engine 'handlebars' from handlebars' engine
 app.set('view engine', 'handlebars'); // sets 'view engine' from app.engine
-
 
 /* 
 ! middleware to create session in the back-end */
