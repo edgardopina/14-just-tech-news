@@ -96,7 +96,7 @@ router.post('/', withAuth, (req, res) => {
       file = req.files.post_img;
       path += file.name;
    } else {
-      path += 'not_available.png';
+      path += 'no-image-available.png';
    }
 
    Post.create({
@@ -112,10 +112,20 @@ router.post('/', withAuth, (req, res) => {
                if (err) {
                   return res.status(500).json(err);
                }
-               return res.send({ status: 'success', path: path });
             });
+            // return res.send({ status: 'success', path: path });
          }
-         // res.render('homepage', { loggedIn: true });
+         // {
+         //    console.log('START FETCH)');
+         //    async () => {
+         //       await fetch('/dashboard', {
+         //          method: 'GET'
+         //       });
+         //    }
+         //    console.log('END FETCH)');
+         // }
+         res.send('/dashboard');
+         // res.json(dbPostData);
       })
       .catch((err) => {
          console.log(err);
