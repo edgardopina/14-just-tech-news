@@ -25,7 +25,8 @@ app.use(fileUpload());
 const sess = {
    /*         
    ! this value must be an actual secret and stored in the '.env' file */
-   secret: process.env.SECRET,
+   // secret: process.env.SECRET,
+   secret: '!lONDHbhXt%$#654jyt',
    // we tell our session to use cookies, If we wanted to set additional options on the
    // cookie, like a maximum age, we would add the options to that object.
    cookie: {},
