@@ -1,5 +1,4 @@
 const router = require('express').Router();
-// const sequelize = require('sequelize');
 const sequelize = require('../../config/connection');
 const { User, Post, Vote, Comment } = require('../../models');
 const withAuth = require('../../utils/auth');
@@ -89,49 +88,20 @@ router.get('/:id', (req, res) => {
 
 // POST /api/posts
 router.post('/', withAuth, (req, res) => {
-   let path = process.cwd() + '/public/images/';
-   let file = '';
-
-   if (req.files) {
-      file = req.files.post_img;
-      path += file.name;
-   } else {
-      path += 'no-image-available.png';
-   }
-
+   console.log('req.body', req.body);
    Post.create({
       title: req.body.post_title,
       post_url: req.body.post_url,
       user_id: req.session.user_id,
-      image_path: path,
+      image_path: req.body.secure_url,
    })
-      .then((dbPostData) => {
-         if (file) {
-            // * move file to new directory in server with: mv(path, CB function(err))
-            file.mv(path, (err) => {
-               if (err) {
-                  return res.status(500).json(err);
-               }
-            });
-            // return res.send({ status: 'success', path: path });
-         }
-         // {
-         //    console.log('START FETCH)');
-         //    async () => {
-         //       await fetch('/dashboard', {
-         //          method: 'GET'
-         //       });
-         //    }
-         //    console.log('END FETCH)');
-         // }
-         res.send('/dashboard');
-         // res.json(dbPostData);
-      })
-      .catch((err) => {
+      .then(dbPostData => res.json(dbPostData))
+      .catch(err => {
          console.log(err);
          res.status(500).json(err);
       });
 });
+
 // PUT /api/posts/upvote
 /*
 ! when we vote on a post, we are technically uopdating the post's data 

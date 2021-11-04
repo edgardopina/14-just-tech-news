@@ -6,16 +6,13 @@ const helpers = require('./utils/helpers'); // import helper functions
 const exphbs = require('express-handlebars'); // import express-handlebars
 
 /*
-! express-formidable */
+! express-fileupload */
 const fileUpload = require('express-fileupload');
 
-
 /* 
-
 ! Creating session in the back-end */
 const session = require('express-session'); // setup express-session
-// connect the session to our Sequelize database
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const SequelizeStore = require('connect-session-sequelize')(session.Store); // connect the session to our Sequelize database
 
 const app = express();
 const PORT = process.env.PORT || 3001;

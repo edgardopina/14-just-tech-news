@@ -1,8 +1,7 @@
 <section>
    <h2>Create New Post</h2>
 
-   {{!-- <form class='new-post-form'> --}}
-   <form class='new-post-form' id="new-post-form" enctype="multipart/form-data" method="POST" action="/api/posts">
+   <form class='new-post-form' name="new-post-form" id="new-post-form" enctype="multipart/form-data">
       <div>
          <label for='post-title'>Title</label>
          <input type='text' id='post_title' name='post_title' />
@@ -33,4 +32,4 @@
    </section>
 {{/if}}
 
-{{!-- <script src='/javascript/add-post.js'></script> --}}
+<script src='/javascript/add-post.js'></script>

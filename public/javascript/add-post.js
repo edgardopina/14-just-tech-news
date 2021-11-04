@@ -1,47 +1,46 @@
-async function newFormHandler(event){
+const url = 'https://api.cloudinary.com/v1_1/diqgo2b5e/image/upload';
+const form = document.querySelector('.new-post-form');
+const NO_URL = 'https://res.cloudinary.com/diqgo2b5e/image/upload/v1636043108/tech_news/no-image-available_g1dvjw.jpg';
+
+form.addEventListener('submit', event => {
    event.preventDefault();
-
-   const title = document.querySelector('input[name="post-title"]').value;
-   const post_url = document.querySelector('input[name="post-url"]').value;
-   const imgPath = document.querySelector('input[name="post-img"]').value;
-   const files = document.querySelector('#post-img').value;
-
-   const image_path = `/public/images/${
-      imgPath ? imgPath.toString().split('\\')[imgPath.toString().split('\\').length - 1] : 'not_available.png'
-   }`;
-
-   /********************   
-   const response = await fetch(`/api/posts`, {
-      method: 'POST',
-      body: JSON.stringify({
-         title,
-         post_url,
-         image_path,
-      }),
-      headers: {
-         'Content-Type': 'application/json',
-      },
-   });
- ********************/
-   
-   const formData = new FormData();
-   formData.append('title', title);
-   formData.append('post_url', post_url);
-   formData.append('image_path', image_path);
-   // formData.append('image-file', files);
-   
-   const response = await fetch(`/api/posts`, {
-      method: 'POST',
-      body: formData,
-   });
-
-   if (response.ok) {
-      document.location.replace('/dashboard');
+   const formData = new FormData(form);
+   const file = document.querySelector('#post_img').files[0];
+   if (file) {
+      const formFileData = new FormData();
+      formFileData.append('file', file);
+      formFileData.append('upload_preset', 't1ipqlym');
+      fetch(url, {
+         method: 'POST',
+         body: formFileData,
+      })
+         .then(response => {
+            return response.json();
+         })
+         .then(data => {
+            formData.append('secure_url', data.secure_url);
+            fetch(`/api/posts`, {
+               method: 'POST',
+               body: formData,
+            }).then(response => {
+               if (response.ok) {
+                  document.location.replace('/dashboard');
+               } else {
+                  alert("Couldn't create new post.", response.statusText);
+               }
+            });
+         });
    } else {
-      console.log('IT DID NOT WORK');
-      alert(response.statusText);
+      formData.append('secure_url', NO_URL);
+      fetch(`/api/posts`, {
+         method: 'POST',
+         body: formData,
+      }).then(response => {
+         if (response.ok) {
+            document.location.replace('/dashboard');
+         } else {
+            alert("Couldn't create new post.", response.statusText);
+         }
+      });
    }
-}
-
-document.querySelector('.new-post-form').addEventListener('submit', newFormHandler);
-
+});
