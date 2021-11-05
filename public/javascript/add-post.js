@@ -1,6 +1,6 @@
 const url = 'https://api.cloudinary.com/v1_1/diqgo2b5e/image/upload';
 const form = document.querySelector('.new-post-form');
-const NO_URL = 'https://res.cloudinary.com/diqgo2b5e/image/upload/v1636043108/tech_news/no-image-available_g1dvjw.jpg';
+const NO_URL = 'https://res.cloudinary.com/diqgo2b5e/image/upload/v1636068149/tech-news/oo3qhjhz534qsyq0mgrq.jpg';
 
 form.addEventListener('submit', event => {
    event.preventDefault();
